@@ -21,4 +21,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # กำหนดคำสั่งเริ่มต้น เมื่อ container รัน
-CMD ["gunicorn", "server:app", "--bind", "0.0.0.0:$PORT"]
+CMD ["sh", "-c", "gunicorn server:app --bind 0.0.0.0:$PORT"]
+
