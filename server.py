@@ -10,8 +10,8 @@ UPLOAD_FOLDER = "static/uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # กำหนด path ของ Tesseract OCR (แก้ไขให้ตรงกับเครื่องของคุณ)
-pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
-# pytesseract.pytesseract.tesseract_cmd = "/usr/bin/pytesseract"
+# pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = "/usr/bin/pytesseract"
 
 def apply_gamma_correction(image, gamma=1.5):
     """ ปรับค่า Gamma Correction เพื่อเพิ่มความคมชัดของภาพ """
