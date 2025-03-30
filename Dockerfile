@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # รัน Gunicorn โดยใช้ shell เพื่อให้มีการ substitute environment variable $PORT
-CMD ["sh", "-c", "gunicorn server:app --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "gunicorn server:app --bind 0.0.0.0:$PORT --log-level debug --access-logfile -"]
