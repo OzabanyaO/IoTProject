@@ -112,7 +112,7 @@ def detect_license_plate(image):
         gray = cv2.bilateralFilter(gray, 11, 17, 17)
 
         # 🔹 ตรวจจับขอบด้วย Canny
-        edged = cv2.Canny(gray, 30, 200)
+        edged = cv2.Canny(gray, 50, 150)
 
         # 🔹 หาคอนทัวร์จากภาพขอบ
         contours, _ = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -140,11 +140,23 @@ def detect_license_plate(image):
         (x, y) = np.where(mask == 255)
         (topx, topy) = (np.min(x), np.min(y))
         (bottomx, bottomy) = (np.max(x), np.max(y))
+
+        # เพิ่ม margin เล็กน้อยเพื่อครอบคลุมตัวอักษรให้ครบถ้วน
+        margin_x = int((bottomx - topx) * 0.1)
+        margin_y = int((bottomy - topy) * 0.1)
+        topx = max(topx - margin_x, 0)
+        topy = max(topy - margin_y, 0)
+        bottomx = min(bottomx + margin_x, gray.shape[0])
+        bottomy = min(bottomy + margin_y, gray.shape[1])
+
         cropped = gray[topx:bottomx+1, topy:bottomy+1]
 
+        # แปลงภาพที่ตัดแล้วเป็นแบบ Binary ด้วย Otsu Thresholding
+        ret, cropped_thresh = cv2.threshold(cropped, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
         # 🔹 OCR อ่านตัวอักษรจากป้ายทะเบียน
-        custom_config = r'--oem 3 --psm 6'
-        text = pytesseract.image_to_string(cropped, lang='tha', config=custom_config)
+        custom_config = r'--oem 3 --psm 7'
+        text = pytesseract.image_to_string(cropped_thresh , lang='tha+eng', config=custom_config)
 
         print("🚗 เลขทะเบียนที่ตรวจจับได้:", text.strip())
         return text.strip()
